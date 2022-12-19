@@ -1,7 +1,7 @@
 const User = require("../models/users")
-const Product = require("../models/product")
+// const Product = require("../models/product")
 const passport = require("passport")
-const Category = require("../models/category")
+// const Category = require("../models/category")
 const sendOtp = require("../middleware/otp")
 
 module.exports = {
@@ -57,6 +57,25 @@ module.exports = {
             })
         } catch (err) {
             console.log(err);
+        }
+    },
+
+    changePassword: async (req, res) => {
+        const oldPassword = req.body.oldPassword
+        const newPassword = req.body.newPassword
+        const confirmedPassword = req.body.confirmedPassword
+        const user = req.user
+
+        if (newPassword === confirmedPassword) {
+            user.changePassword(oldPassword, newPassword, function (err) {
+                if (err) {
+                    res.status(401).json({ message: "passwords didn't match"})
+                } else {
+                    res.status(201).json({ message: "passwords changed succesfully"})
+                }
+            })
+        } else {
+            res.status(403).json({ message: "passwords didn't match"})
         }
     },
 
