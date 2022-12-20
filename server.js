@@ -8,7 +8,6 @@ const session = require("express-session")
 const flash = require("connect-flash")
 const methodOverride = require("method-override")
 const User = require("./models/users")
-
 const cors = require("cors")
 
 const app = express();
@@ -24,12 +23,13 @@ app.set("layout", "layouts/masterLayout")
 app.set("layout extractScripts", true)
 
 app.use(cors())
+app.use(express.urlencoded({ extended: false }))
 app.use(express.static("public"))
 app.use(expressLayout)
-app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(methodOverride("_method"))
 
+// Using express-session
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -38,22 +38,23 @@ app.use(session({
 
 app.use(flash())
 
+// Cache control
 app.use(function (req, res, next) {
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
   next();
 });
 
-app.use(express.static("public"))
+// Initializing passport session
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+// Passport-Local Configuration
 passport.use(User.createStrategy());
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-//facebook and google oAuth
+// Facebook and Google oAuth
 // oAuth()
 
 app.use(function (req, res, next) {
@@ -75,7 +76,6 @@ app.use(function (req, res, next) {
     res.render('errorPage/error', { layout: false });
     return;
   }
-
 });
 
 const PORT = process.env.PORT || 3000
