@@ -61,3 +61,5 @@ productSchema.pre("remove", function (next) {
         }
     })
 })
+
+module.exports = mongoose.model("Product", productSchema)
