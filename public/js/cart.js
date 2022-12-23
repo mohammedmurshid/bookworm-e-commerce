@@ -60,7 +60,7 @@ async function addToCart(productId, productName, productPrice, quantity, offerPr
                     icon: "error",
                     title: "Oops...",
                     text: "This product is out of stock",
-                    confirmedButtonColour: "#273952",
+                    confirmedButtonColour: "#275237",
                     width: "25em",
                     timer: 2000
                 })
@@ -84,7 +84,7 @@ async function addToCart(productId, productName, productPrice, quantity, offerPr
                 icon: "warning",
                 title: "Oops...",
                 text: "Please login to add items to cart",
-                confirmedButtonColour: "#273952",
+                confirmedButtonColour: "#275237",
                 width: "25em",
                 timer: 3000
             })
