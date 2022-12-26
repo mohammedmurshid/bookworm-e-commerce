@@ -123,14 +123,28 @@ module.exports = {
 
   getTableDetails: async (req, res) => {
     try {
-        const monthlySales = await Order.aggregate([
-            // First stage
-            {
-                $match: { }
-            }
-        ])
+      const dailySales = await Order.aggregate([
+        // First stage
+        {
+          $match: { createdAt: { $ne: null } },
+        },
+        {
+          $match: { status: { $ne: "Cancelled" } },
+        },
+        // Second Stage
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+            sales: { $sum: "$total" },
+          },
+        },
+        // Third Stage
+        {
+          $sort: { _id: -1 },
+        },
+      ]);
     } catch (err) {
-        res.status(500).json({ err })
+      res.status(500).json({ err });
     }
   },
 
