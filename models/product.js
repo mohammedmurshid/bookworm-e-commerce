@@ -1,65 +1,89 @@
-const mongoose = require("mongoose")
-const Order = require("./order")
+const mongoose = require("mongoose");
+const Order = require("./order");
 
-const productSchema = new mongoose.Schema({
+const reviewSchema = mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+    },
+    review: {
+      type: String,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+  },
+  { timeStamps: true }
+);
+
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
     brand: String,
     quantity: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     category: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "Category"
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Category",
     },
     isFeatured: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     isDeleted: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     price: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     discount: Number,
     offerPrice: Number,
     description: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     rating: {
-        type: [Number]
+      type: [Number],
     },
-    // reviews: [reviewSchema],
+    reviews: [reviewSchema],
     avgRating: {
-        type: Number,
-        required: true,
-        default: 0
+      type: Number,
+      required: true,
+      default: 0,
     },
     totalReviews: {
-        type: Number,
-        required: true,
-        default: 0
+      type: Number,
+      required: true,
+      default: 0,
     },
     productImagePath: [String],
-    
-}, { timestamps: true })
+  },
+  { timestamps: true }
+);
 
 productSchema.pre("remove", function (next) {
-    Order.find({ product: this.id }, (err, orders) => {
-        if (err) {
-            next(err)
-        } else if (oreders.length > 0) {
-            next(new Error("This item Can't be deleted"))
-        }
-    })
-})
+  Order.find({ product: this.id }, (err, orders) => {
+    if (err) {
+      next(err);
+    } else if (oreders.length > 0) {
+      next(new Error("This item Can't be deleted"));
+    }
+  });
+});
 
-module.exports = mongoose.model("Product", productSchema)
+module.exports = mongoose.model("Product", productSchema);

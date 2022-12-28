@@ -1,6 +1,6 @@
 <div class="container-fluid px-4">
   <h1 class="mt-4">Dashboard</h1>
-  <%- include("../partials/message") %>
+  <%- include("../partials/errorMessage") %>
   <!-- <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item active">Dashboard</li>
   </ol> -->
@@ -13,11 +13,11 @@
           </div>
           Total users
         </div>
-        <div class="card-footer d-flex align-items-center justify-content-between">
+        <div
+          class="card-footer d-flex align-items-center justify-content-between"
+        >
           <!-- <a class="small text-white stretched-link" href="#">View Details</a> -->
-          <h3>
-            <%= userCount %>
-          </h3>
+          <h3><%= userCount %></h3>
           <div class="small text-white"><i class="fas fa-angle-right"></i></div>
         </div>
       </div>
@@ -30,11 +30,10 @@
           </div>
           Pending Order
         </div>
-        <div class="card-footer d-flex align-items-center justify-content-between">
-          
-          <h3>
-             <%= orderStatusCount[0] %>
-          </h3>
+        <div
+          class="card-footer d-flex align-items-center justify-content-between"
+        >
+          <h3><%= orderStatusCount[0] %></h3>
           <div class="small text-white"><i class="fas fa-angle-right"></i></div>
         </div>
       </div>
@@ -47,11 +46,10 @@
           </div>
           Completed Orders
         </div>
-        <div class="card-footer d-flex align-items-center justify-content-between">
-          
-          <h3>
-             <%= orderStatusCount[1] %> 
-          </h3>
+        <div
+          class="card-footer d-flex align-items-center justify-content-between"
+        >
+          <h3><%= orderStatusCount[1] %></h3>
           <div class="small text-white"><i class="fas fa-angle-right"></i></div>
         </div>
       </div>
@@ -65,11 +63,10 @@
           </div>
           Total Sale
         </div>
-        <div class="card-footer d-flex align-items-center justify-content-between">
-          
-          <h3>
-            ₹ <%= orderStatusCount[2] %>
-          </h3>
+        <div
+          class="card-footer d-flex align-items-center justify-content-between"
+        >
+          <h3>₹ <%= orderStatusCount[2] %></h3>
           <div class="small text-white"><i class="fas fa-angle-right"></i></div>
         </div>
       </div>
@@ -82,7 +79,9 @@
           <i class="fas fa-chart-area me-1"></i>
           Sales
         </div>
-        <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+        <div class="card-body">
+          <canvas id="myAreaChart" width="100%" height="40"></canvas>
+        </div>
       </div>
     </div>
     <div class="col-xl-6">
@@ -91,7 +90,9 @@
           <i class="fas fa-chart-bar me-1"></i>
           User Registers
         </div>
-        <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+        <div class="card-body">
+          <canvas id="myBarChart" width="100%" height="40"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -104,7 +105,13 @@
         Sales Report
       </div>
       <div class="table-body">
-        
+        <p id="sale_table" style="font-size: 15px; font-weight: bold"></p>
+
+        <button onclick="constructTable('#table')">Get Daily Report</button>
+
+        <br /><br />
+
+        <table align="center" id="table" border="1"></table>
       </div>
     </div>
   </div>
