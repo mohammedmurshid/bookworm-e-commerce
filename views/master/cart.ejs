@@ -107,21 +107,9 @@
           <!-- <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
             Upadate Cart</a> -->
         </div>
-      </div>
+      </div>    
       <div class="col-lg-6">
-        <div class="shoping__continue">
-          <div class="shoping__discount">
-            <h5>Discount Codes</h5>
-            <form id="couponForm">
-              <input
-                type="text"
-                placeholder="Enter your coupon code"
-                id="couponCode"
-              />
-              <button type="submit" class="site-btn">APPLY COUPON</button>
-            </form>
-          </div>
-        </div>
+        
       </div>
       <div class="col-lg-6">
         <div class="shoping__checkout" id="checkoutBox">
@@ -135,32 +123,11 @@
             <li>
               Cart Discount
               <span class="text-muted">₹<%=discount.toFixed(2)%></span>
-            </li>
-            <% if(couponCode){%>
-            <li>
-              Coupon
-              <span class="text-muted"
-                ><i class="fa-solid fa-tags"></i> <%=couponCode%>
-                <i
-                  class="fa-solid fa-trash-can fa-xs trash"
-                  onclick="removeCoupon()"
-                ></i>
-              </span>
-            </li>
-            <li>
-              Coupon Discount
-              <span class="text-muted"> <%=couponDiscount.toFixed(2)%> </span>
-            </li>
-            <li>
-              Total
-              <span>₹<%= (findCart.total - couponDiscount).toFixed(2) %></span>
-            </li>
-            <% }else{%>
+            </li>            
             <li>
               Total
               <span>₹<%= findCart.total.toFixed(2) %></span>
             </li>
-            <% } %>
           </ul>
           <a href="/user/checkout" class="primary-btn">PROCEED TO CHECKOUT</a>
         </div>
