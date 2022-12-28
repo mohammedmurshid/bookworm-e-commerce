@@ -44,10 +44,11 @@ const otpVerification = async (req, res) => {
     } else {
       const allCategories = await Category.find();
       const hiddenEmail = hideEmail(req.user.email);
-      res.render("optValidationForm", {
+      res.render("otpValidationForm", {
         email: hiddenEmail,
         errorMessage: "invalid otp",
         allCategories: allCategories,
+        layout: false
       });
     }
   } catch (err) {
@@ -62,10 +63,11 @@ const getOtpForm = async (req, res) => {
     const allCategories = await Category.find();
     const successMessage = req.flash("message");
     const hiddenEmail = hideEmail(req.user.email);
-    res.render("optValidationForm", {
+    res.render("otpValidationForm", {
       successMessage: successMessage,
       email: hiddenEmail,
       allCategories: allCategories,
+      layout: false
     });
   } catch (err) {
     console.log(err);

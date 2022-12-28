@@ -1,4 +1,4 @@
-const getOtpForm = require("./otp")
+const { sendOtp, getOtpForm } = require("./otp");
 
 module.exports = {
   checkLoggedOut: (req, res, next) => {

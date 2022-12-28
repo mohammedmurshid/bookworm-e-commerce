@@ -1,8 +1,8 @@
 const User = require("../models/users")
-// const Product = require("../models/product")
+const Product = require("../models/product")
 const passport = require("passport")
-// const Category = require("../models/category")
-const sendOtp = require("../middleware/otp")
+const Category = require("../models/category")
+const {sendOtp, getOtpForm} = require("../middleware/otp")
 
 module.exports = {
     userRegister: (req, res, next) => {

@@ -11,8 +11,6 @@ const {
     sendOtp
 } = require("../middleware/otp");
 
-router.get("/otp", (req, res) => {res.render("optValidationForm")})
-
 router.get("/", authentication.checkAccountVerifiedInIndex, shopControl.getHome)
 router.get("/shop/category/:category/:page", authentication.checkAccountVerifiedInIndex, shopControl.getShopByCategory)
 router.get("/shop/:page", authentication.checkAccountVerifiedInIndex, shopControl.getAllProducts)
