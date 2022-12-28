@@ -20,7 +20,6 @@ router.get("/myOrders/:id", shopControl.orderDetails)
 router.get("/cartItemCount",cartControl.cartItemCount)
 router.get("/wishlistItemCount",wishlistControl.wishlistItemCount)
 
-
 router.post("/addRating/:id",userControl.addRating)
 router.post("/createAddress",userControl.createAddress)
 router.post("/payment/orderId",paymentControl.generateOrder)
@@ -32,8 +31,8 @@ router.post("/redeem/:id",couponControl.redeem)
 router.put("/cancelOrder/:id", orderControl.cancelOrder)
 router.put("/wishlist/:id", wishlistControl.addToWishlist)
 router.put("/addToCart/:id", cartControl.addToCart)
-// router.put("/setPassword", userControl.setPassword)
-// router.put("/changePassword", userControl.changePassword)
+router.put("/setPassword", userControl.setPassword)
+router.put("/changePassword", userControl.changePassword)
 
 router.delete("/removeCoupon",couponControl.removeCoupon)
 router.delete("/cart/:id", cartControl.deleteItem)

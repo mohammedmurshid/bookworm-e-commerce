@@ -1,105 +1,54 @@
-const Order = require("../models/order");
+const express = require("express")
+const router = express.Router()
+const userControl = require("../controllers/userController")
+const multer = require("../middleware/multer")
+const authentication = require("../middleware/authentication")
+const productControl = require("../controllers/productController")
+const adminControl = require("../controllers/adminController")
+const orderControl = require("../controllers/orderController")
+const bannerControl = require("../controllers/bannerController")
+const couponControl = require("../controllers/couponController")
+const salesControl = require("../controllers/salesController")
 
-module.exports = {
-  getSales: async (req, res) => {
-    try {
-      const errorMessage = req.flash("message");
+router.use(authentication.checkLoggedIn, authentication.checkAdminPrivilege)
 
-      //   for getting daily sales report
-      const dailySales = await Order.aggregate([
-        {
-          $match: { createdAt: { $ne: null } },
-        },
-        {
-          $match: { status: { $ne: "Cancelled" } },
-        },
-        {
-          $project: {
-            Date: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            Time: { $dateToString: { format: "%H:%M", date: "$createdAt" } },
-            paymentDetails: "$paymentType",
-            subTotal: "$subTotal",
-            status: "$status",
-          },
-        },
-      ]);
+router.get("/", adminControl.home)
+router.get("/getGraphDetails",adminControl.getGraphDetails)
+router.get("/users", adminControl.users)
+router.get("/categories", adminControl.categories)
+router.get("/products", adminControl.products)
+router.get("/orders", adminControl.orders)
+router.get("/coupons", adminControl.coupons)
+router.get("/banners", bannerControl.getBanner)
+router.get("/sales", salesControl.getSales)
+router.get("/orders/:id", adminControl.orderDetails)
 
-      //   for getting all sales report
-      const allOrders = await Order.find().sort({ createdAt: -1 }).exec();
 
-      // For getting weekly sales report
-      let weekly = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
-      const weeklySales = await Order.aggregate([
-        {
-          $match: { createdAt: { $gte: weekly } },
-        },
-        {
-          $match: { status: { $ne: "Cancelled" } },
-        },
-        {
-          $project: {
-            Date: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            Time: { $dateToString: { format: "%H:%M", date: "$createdAt" } },
-            paymentDetails: "$paymentType",
-            subTotal: { $sum: "$subTotal"},
-            status: "$status",
-          },
-        },
-      ]);
+router.post("/addCategory", adminControl.addCategory)
+router.post("/addProduct", multer.productImage, productControl.addProduct)
+router.post("/addCoupon", couponControl.addCoupon)
+router.post("/addBanner", multer.bannerImage, bannerControl.addBanner)
 
-      //   for getting monthly sales report
-      let monthly = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
-      const monthlySales = await Order.aggregate([
-        {
-          $match: { createdAt: { $gte: monthly } },
-        },
-        {
-          $match: { status: { $ne: "Cancelled" } },
-        },
-        {
-          $project: {
-            Date: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            Time: { $dateToString: { format: "%H:%M", date: "$createdAt" } },
-            paymentDetails: "$paymentType",
-            subTotal: { $sum: "$subTotal"},
-            status: "$status",
-          },
-        },
-      ]);
+router.put("/activateCoupon/:id", couponControl.activate)
+router.put("/deactivateCoupon/:id", couponControl.deactivate)
+router.put("/editProduct/:id", multer.productImage, productControl.editProduct)
+router.put("/editCategory/:id", adminControl.editCategory)
+router.put("/blockUser/:id", adminControl.blockUser)
+router.put("/unblockUser/:id", adminControl.unblockUser)
 
-      //   for getting yearly sales report
-      let yearly = new Date(
-        new Date().getTime() - 12 * 30 * 24 * 60 * 60 * 1000
-      );
-      const yearlySales = await Order.aggregate([
-        {
-          $match: { createdAt: { $gte: yearly } },
-        },
-        {
-          $match: { status: { $ne: "Cancelled" } },
-        },
-        {
-          $project: {
-            Date: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
-            Time: { $dateToString: { format: "%H:%M", date: "$createdAt" } },
-            paymentDetails: "$paymentType",
-            subTotal: { $sum: "$subTotal"},
-            status: "$status",
-          },
-        },
-      ]);
+router.put("/activateBanner/:id", bannerControl.activate)
+router.put("/deactivateBanner/:id", bannerControl.deactivate)
 
-      res.render("admin/sales", {
-        allOrders: allOrders,
-        dailySales: dailySales,
-        weeklySales: weeklySales,
-        monthlySales: monthlySales,
-        yearlySales: yearlySales,
-        errorMessage: errorMessage,
-        layout: "layouts/adminLayout",
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  },
-};
+router.put("/packOrder/:id", orderControl.packOrder)
+router.put("/shipOrder/:id", orderControl.shipOrder)
+router.put("/outForDelivery/:id", orderControl.outForDelivery)
+router.put("/deliverPackage/:id", orderControl.deliverPackage)
+router.put("/cancelOrder/:id", orderControl.cancelOrder)
+
+router.put("/deleteProduct/:id", productControl.deleteProduct)
+router.put("/activateProduct/:id", productControl.activateProduct)
+
+router.delete("/deleteCategory/:id", adminControl.deleteCategory)
+router.delete("/logout", userControl.userLogout)
+
+module.exports = router
