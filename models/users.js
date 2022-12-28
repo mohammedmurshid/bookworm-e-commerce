@@ -10,11 +10,10 @@ const addressSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    address1: {
-        type: String,
-        required: true
+    house: {
+        type: String
     },
-    address2: {
+    address: {
         type: String,
         required: true
     },
@@ -26,7 +25,7 @@ const addressSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    zipcode: {
+    pincode: {
         type: Number,
         required: true
     },
