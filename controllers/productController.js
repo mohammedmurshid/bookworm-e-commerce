@@ -1,14 +1,14 @@
 const Product = require("../models/product")
 const fs = require("fs").promises
+
 module.exports = {
-// to add products
     addProduct: async (req, res) => {
         try {
             const price = parseFloat(req.body.price)
             const discount = req.body.discount ? parseFloat(req.body.discount) : null
-            const offerPrice = req.body.discount ? price - ((price / 100) * discount) : null
+            const offerPrice = req.body.discount ? price - ((price / 100) * discount) : null;
             const isFeatured = req.body.isFeatured == 'on' ? true : false
-            const productImages = req.files != null ? req.files.map((img) => img.fileName) : null
+            const productImages = req.files != null ? req.files.map((img) => img.filename) : null
             const product = new Product({
                 name: req.body.name,
                 brand: req.body.brand,
@@ -19,18 +19,19 @@ module.exports = {
                 offerPrice: offerPrice,
                 isFeatured: isFeatured,
                 description: req.body.description,
-                productImagePath:productImages,
+                productImagePath: productImages
             })
             await product.save()
             res.redirect("/admin/products")
+
         } catch (err) {
-            console.log(err);
-            req.flash("message", "Error Adding Product")
+            console.log(err)
+            req.flash("message", "Error Adding product")
             res.redirect("/admin/products")
         }
+
     },
 
-    // to edit products
     editProduct: async (req, res) => {
         let product
         try {
@@ -40,7 +41,7 @@ module.exports = {
             const offerPrice = req.body.discount ? price - ((price / 100) * discount) : null;
             const isFeatured = req.body.isFeatured == "on" ? true : false
             const oldProductImages = product.productImagePath
-            const productImages = req.files.length > 0 ? req.files.map((img) => img.fileName) : oldProductImages
+            const productImages = req.files.length > 0 ? req.files.map((img) => img.filename) : oldProductImages
             await Product.findByIdAndUpdate(req.params.id, {
                 name: req.body.name,
                 brand: req.body.brand,
@@ -51,10 +52,8 @@ module.exports = {
                 offerPrice: offerPrice,
                 isFeatured: isFeatured,
                 description: req.body.description,
-                productImagePath:productImages,
+                productImagePath: productImages
             })
-
-            // removing old product images
             if (req.files.length > 0) {
                 oldProductImages.forEach(async (image) => {
                     await fs.unlink("./public/files/" + image)
@@ -62,14 +61,14 @@ module.exports = {
             }
             res.redirect("/admin/products")
         } catch (err) {
-            console.log(err);
-            req.flash("message", "Error Updating Product")
+            console.log(err)
+            req.flash("message", "Error updating product")
             res.redirect("/admin/products")
         }
     },
 
-    // to soft delete products
-    deleteProduct: async (req, res) => {
+     // to soft delete products
+     deleteProduct: async (req, res) => {
         try {
             await Product.findByIdAndUpdate(req.params.id, { isDeleted: true })
             res.redirect("/admin/products")
@@ -78,5 +77,18 @@ module.exports = {
             req.flash("message", "Error Deleting Product")
             res.redirect("/admin/products")
         }
+    },
+
+    // to undo soft delete
+    activateProduct: async (req, res) => {
+        try {
+            await Product.findByIdAndUpdate(req.params.id, { isDeleted: false })
+            res.redirect("/admin/products")
+        } catch (err) {
+            console.log(err);
+            req.flash("message", "Error Activating Product")
+            res.redirect("/admin/products")
+        }
     }
+
 }

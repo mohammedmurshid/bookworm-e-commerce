@@ -8,6 +8,7 @@ const adminControl = require("../controllers/adminController")
 const orderControl = require("../controllers/orderController")
 const bannerControl = require("../controllers/bannerController")
 const couponControl = require("../controllers/couponController")
+const salesControl = require("../controllers/salesController")
 
 router.use(authentication.checkLoggedIn, authentication.checkAdminPrivilege)
 
@@ -43,7 +44,9 @@ router.put("/outForDelivery/:id", orderControl.outForDelivery)
 router.put("/deliverPackage/:id", orderControl.deliverPackage)
 router.put("/cancelOrder/:id", orderControl.cancelOrder)
 
-router.delete("/deleteProduct/:id", productControl.deleteProduct)
+router.put("/deleteProduct/:id", productControl.deleteProduct)
+router.put("/activateProduct/:id", productControl.activateProduct)
+
 router.delete("/deleteCategory/:id", adminControl.deleteCategory)
 router.delete("/logout", userControl.userLogout)
 
