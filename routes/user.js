@@ -31,7 +31,6 @@ router.post("/redeem/:id",couponControl.redeem)
 router.put("/cancelOrder/:id", orderControl.cancelOrder)
 router.put("/wishlist/:id", wishlistControl.addToWishlist)
 router.put("/addToCart/:id", cartControl.addToCart)
-router.put("/setPassword", userControl.setPassword)
 router.put("/changePassword", userControl.changePassword)
 
 router.delete("/removeCoupon",couponControl.removeCoupon)
