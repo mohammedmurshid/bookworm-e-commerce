@@ -41,7 +41,7 @@ module.exports = {
         orderStatusDelivered,
         totalSale[0]?.totalAmount.toFixed(2),
       ];
-      res.render("admin/home", {
+      res.render("admin/index", {
         errorMessage: errorMessage,
         layout: "layouts/adminLayout",
         orderStatusCount: orderStatusCount,

@@ -29,7 +29,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    brand: String,
     quantity: {
       type: Number,
       required: true,
@@ -39,6 +38,11 @@ const productSchema = new mongoose.Schema(
       required: true,
       ref: "Category",
     },
+    subCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false,
+      ref: "subCategory",
+    },
     isFeatured: {
       type: Boolean,
       default: false,
@@ -47,6 +51,7 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    productImagePath: [String],
     price: {
       type: Number,
       required: true,
@@ -57,6 +62,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    brand: String,
     rating: {
       type: [Number],
     },
@@ -71,7 +77,6 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    productImagePath: [String],
   },
   { timestamps: true }
 );
@@ -80,8 +85,10 @@ productSchema.pre("remove", function (next) {
   Order.find({ product: this.id }, (err, orders) => {
     if (err) {
       next(err);
-    } else if (oreders.length > 0) {
-      next(new Error("This item Can't be deleted"));
+    } else if (orders.length > 0) {
+      next(new Error("This item cant be deleted."));
+    } else {
+      next();
     }
   });
 });

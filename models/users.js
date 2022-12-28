@@ -8,7 +8,7 @@ const addressSchema = new mongoose.Schema({
     },
     lastName: {
         type: String,
-        required: true
+        require: true
     },
     house: {
         type: String
@@ -19,7 +19,7 @@ const addressSchema = new mongoose.Schema({
     },
     city: {
         type: String,
-        required: true
+        required: true,
     },
     state: {
         type: String,
@@ -27,7 +27,7 @@ const addressSchema = new mongoose.Schema({
     },
     pincode: {
         type: Number,
-        required: true
+        required: true,
     },
     phone: {
         type: String,
@@ -43,9 +43,26 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        required: true
+    },
+    facebook: {
+        id: String,
+        token: String,
+        email: String,
+        name: String
+    },
+    google: {
+        id: String,
+        token: String,
+        email: String,
+        name: String
+    },
+    havePassword: {
+        type: Boolean,
+        default: true,
+        required: true
     },
     isAdmin: {
         type: Boolean,
@@ -55,7 +72,7 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         required: true,
-        default: true
+        default: true,
     },
     isVerified: {
         type: Boolean,
@@ -67,16 +84,21 @@ const userSchema = new mongoose.Schema({
     },
     otp: {
         type: Number
-    },    
-}, {timestamps: true})
+    },
+    redeemedCoupons: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Coupon"
+    }],
+}, { timestamps: true })
 
 userSchema.plugin(passportLocalMongoose, {
     usernameField: "email",
     findByUsername: function (model, queryParameters) {
-        // Add additional query parameter and condition isActive: true
+        // Add additional query parameter - AND condition - active: true
         queryParameters.isActive = true;
-        return model.findOne(queryParameters)
+        return model.findOne(queryParameters);
     }
-})
+
+});
 
 module.exports = mongoose.model("User", userSchema)

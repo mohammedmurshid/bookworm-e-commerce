@@ -42,7 +42,7 @@ module.exports = {
         .limit(12)
         .exec();
 
-      res.render("master/home", {
+      res.render("master/index", {
         allCategories: allCategories,
         featuredProducts: featuredProducts,
         latestProducts: latestProducts,

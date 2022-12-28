@@ -6,16 +6,16 @@ const bannerSchema = new mongoose.Schema({
         required: true
     },
     title: {
-        type: String
+        type: String,
     },
     viewOrder: {
         type: String,
         required: true
     },
     caption: {
-        type: String
+        type: String,
     },
-    promoCoupen: {
+    promoCoupon: {
         type: String
     },
     isActive: {
@@ -26,5 +26,6 @@ const bannerSchema = new mongoose.Schema({
         type: String
     }
 }, { timestamps: true })
+
 
 module.exports = mongoose.model("Banner", bannerSchema)

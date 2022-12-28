@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema({
     total: {
         type: Number
     },
-    coupen: {
+    coupon: {
         code: String,
         discount: Number
     },
@@ -48,6 +48,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         default: "Pending"
     }
-}, {timestamps: true })
+
+}, { timestamps: true })
 
 module.exports = mongoose.model("Order", orderSchema)

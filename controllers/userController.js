@@ -2,102 +2,89 @@ const User = require("../models/users")
 const Product = require("../models/product")
 const passport = require("passport")
 const Category = require("../models/category")
-const {sendOtp, getOtpForm} = require("../middleware/otp")
+const { sendOtp, getOtpForm } = require("../middleware/otp")
+
 
 module.exports = {
     userRegister: (req, res, next) => {
         if (req.body.password === req.body.confirmedPassword) {
             User.register({
                 name: req.body.name,
-                email: req.body.email
+                email: req.body.email,
             }, req.body.password, async function (err, user) {
                 if (err) {
                     console.log(err)
-                    req.flash("message", "User Already Registered")
+                    req.flash("message", "User Already registered")
                     res.redirect("/register")
-                } else {
+                }
+                else {
                     passport.authenticate("local")(req, res, function () {
                         process.nextTick(async () => {
                             await sendOtp(req, res)
                         })
                         res.redirect("/")
                     })
+
                 }
             })
-        } else {
-            req.flash("message", "Password didn't match")
+        }
+        else {
+            req.flash("message", "password doesn't match")
             res.redirect("/register")
         }
     },
 
-    userLogin: passport.authenticate("local", {
+    userLogin: passport.authenticate('local', {
         failureFlash: true,
         keepSessionInfo: true,
-        failureRedirect: "/login"
+        failureRedirect: '/login',
     }),
 
     userLogout: (req, res) => {
         req.logout(function (err) {
             if (err) {
-                console.log(err);
+                console.log(err)
             } else {
-                res.redirect("/")
+                res.redirect('/')
             }
         })
-    }, 
-
-    getProfile: async (req, res) => {
-        try {
-            const userId = req.user.id
-            const allCategories = await Category.find()
-            const user = await User.findById(userId)
-            res.render("master/profile", {
-                allCategories: allCategories,
-                user: user
-            })
-        } catch (err) {
-            console.log(err);
-        }
     },
 
-    changePassword: async (req, res) => {
+    changePassword: (req, res) => {
         const oldPassword = req.body.oldPassword
-        const newPassword = req.body.newPassword
+        const newPassword = req.body.password
         const confirmedPassword = req.body.confirmedPassword
         const user = req.user
-
         if (newPassword === confirmedPassword) {
             user.changePassword(oldPassword, newPassword, function (err) {
                 if (err) {
-                    res.status(401).json({ message: "passwords didn't match"})
-                } else {
-                    res.status(201).json({ message: "passwords changed succesfully"})
+                    res.status(401).json({ message: "wrong credential" })
+                }
+                else {
+                    res.status(201).json({ message: "password changed" })
                 }
             })
-        } else {
-            res.status(403).json({ message: "passwords didn't match"})
+        }
+        else {
+            res.status(403).json({ message: "password doesn't match" })
         }
     },
 
-    createAddress: async (req, res) => {
+    setPassword: async (req, res) => {
+        const { password, confirmedPassword } = req.body
+        const user = req.user
         try {
-            const userId = req.user.id
-            const user = await User.findById(userId)
-            user.address.unshift({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                address1: req.body.address1,
-                address2: req.body.address2,
-                city: req.body.city,
-                state: req.body.state,
-                zipcode: req.body.zipcode,
-                phone: req.body.phone
-            })
-            await user.save()
-            res.status(201).json({ message: "New Address Created"})
+            if (password === confirmedPassword) {
+                await user.setPassword(password)
+                await User.findByIdAndUpdate(req.user.id, { havePassword: true })
+                await user.save()
+                res.status(201).json({ message: "password changed" })
+            } else {
+                res.status(403).json({ message: "password doesn't match" })
+            }
         } catch (err) {
-            console.log(err);
-            res.status(500).json({ err })
+            res.status(401).json({ message: "Error setting Password" })
+            console.log(err)
         }
     },
 
@@ -107,10 +94,46 @@ module.exports = {
             const user = await User.findById(req.user.id)
             user.address.splice(addressIndex, 1)
             await user.save()
-            return res.status(204).json({ message: "Address Removed"})
+            return res.status(204).json({ message: "address removed" })
         } catch (err) {
-            console.log(err);
+            console.log(err)
             res.status(500)
+        }
+    },
+
+    getProfile: async (req, res) => {
+        try {
+            const userId = req.user.id
+            const allCategories = await Category.find();
+            const user = await User.findById(userId)
+            res.render("master/profile", {
+                allCategories: allCategories,
+                user: user
+            })
+        } catch (err) {
+            console.log(err)
+        }
+    },
+
+    createAddress: async (req, res) => {
+        try {
+            const userId = req.user.id
+            const myUser = await User.findById(userId)
+            myUser.address.unshift({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                house: req.body.house,
+                address: req.body.address,
+                city: req.body.city,
+                state: req.body.state,
+                pincode: req.body.pincode,
+                phone: req.body.phone
+            })
+            await myUser.save()
+            res.status(201).json({ message: "new address created" })
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({ err })
         }
     },
 
@@ -121,11 +144,10 @@ module.exports = {
             const product = await Product.findById(req.params.id)
             const newReview = {
                 name: req.user.name,
-                userId: userId,
+                userId: req.user.id,
                 rating: Number(rating),
                 review
             }
-            
             const foundIndex = product.reviews.findIndex(review => review.userId.toString() == userId)
 
             if (foundIndex > -1) {
@@ -133,17 +155,15 @@ module.exports = {
             } else {
                 product.reviews.push(newReview)
             }
-
-            // Getting number of reviews
-            product.totalReviews = product.reviews.length 
-            // Getting average rating by dividing total of all rating by total number of rating
+            product.totalReviews = product.reviews.length
             product.avgRating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.totalReviews
-
             await product.save()
-            res.status(201).json({ message: "Review Updated" })
+            res.status(201).json({ message: "review updated" })
+
         } catch (err) {
-            console.log(err);
+            console.log(err)
             res.status(500).json({ err })
         }
     }
+
 }
