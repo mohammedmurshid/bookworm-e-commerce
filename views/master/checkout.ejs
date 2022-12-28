@@ -47,6 +47,26 @@
     </div>
     <% } %>
 
+    
+    <!-- Apply Coupon Section -->
+    <div class="col-lg-6">
+      <div class="shoping__continue">
+        <div class="shoping__discount">
+          <h5>Discount Codes</h5>
+          <form id="couponForm">
+            <input
+              type="text"
+              placeholder="Enter your coupon code"
+              id="couponCode"
+            />
+            <button type="submit" class="site-btn">APPLY COUPON</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
     <div class="checkout__form">
       <h4>Shipping Address</h4>
       <form action="/user/checkout" method="post" id="checkoutForm">
@@ -113,7 +133,7 @@
             <% } %>
           </div>
           <div class="col-lg-6">
-            <div class="checkout__order">
+            <div class="checkout__order" id="checkoutBox">
               <h4>Your Order</h4>
               <div class="checkout__order__products">Products <span>Total</span></div>
               <div>
@@ -133,8 +153,8 @@
               <div class="checkout__order__subtotal">Subtotal <span><del>₹<%= findCart.subTotal.toFixed(2) %></del></span></div>
               <% if(couponCode){%>
               <div class="checkout__order__total">Cart Discount <span class="text-muted">₹<%= (findCart.subTotal - findCart.total ).toFixed(2)%></span></div>
-              <div class="checkout__order__total">Coupon <span class="text-muted"><i class="fa-solid fa-tags"></i> <%=couponCode %></span></div>
-              <div class="checkout__order__total">Coupon Discount <span class="text-muted">₹<%=couponDiscount %> </span></div>
+              <div class="checkout__order__total">Coupon <span class="text-muted"><i class="fa-solid fa-tags"></i> <%=couponCode %> <i class="fa-solid fa-trash-can fa-xs trash" onclick="removeCoupon()"></i></span></div>
+              <div class="checkout__order__total">Coupon Discount <span class="text-muted">₹<%=couponDiscount %>  </span></div>
               <div class="checkout__order__total">Total <span>₹<%= (findCart.total - couponDiscount).toFixed(2) %></span></div>
               <%}else{ %>
               <div class="checkout__order__total">Cart Discount <span class="text-muted">₹<%= (findCart.subTotal - findCart.total).toFixed(2) %> </span></div>
@@ -170,6 +190,68 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="/js/checkout.js"></script>
 <script src="/js/address-auto-complete.js"></script>
+
+<script>
+  document.forms["couponForm"].addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const couponCode = document.getElementById("couponCode").value;
+    let response;
+    try {
+      response = await axios.post(`/user/redeem/${couponCode}`);
+      if (response.status == 200) {
+        $("#checkoutBox").load(location.href + " #checkoutBox>*", "");
+        await Swal.fire({
+          icon: "success",
+          title: `Congrats you have saved ${response.data.couponDiscount}`,
+          showConfirmButton: false,
+          timer: 1500,
+          width: "25em",
+        });
+      }
+    } catch (err) {
+      if (err.response.status == 400) {
+        $("#checkoutBox").load(location.href + " #checkoutBox>*", "");
+        Swal.fire({
+          icon: "warning",
+          title: `minimum purchase is ${err.response.data.minPurchase}`,
+          showConfirmButton: false,
+          timer: 1500,
+          width: "25em",
+        });
+      } else if (err.response.status == 403) {
+        $("#checkoutBox").load(location.href + " #checkoutBox>*", "");
+        Swal.fire({
+          icon: "warning",
+          title: "Coupon already redeemed",
+          showConfirmButton: false,
+          timer: 1500,
+          width: "25em",
+        });
+      } else if (err.response.status == 404) {
+        $("#checkoutBox").load(location.href + " #checkoutBox>*", "");
+        Swal.fire({
+          icon: "warning",
+          title: "Invalid Coupon or Expired",
+          showConfirmButton: false,
+          timer: 1500,
+          width: "25em",
+        });
+      }
+    }
+  });
+
+  async function removeCoupon() {
+    console.log("coupen remove");    
+    try {
+      const response = await axios.delete("/user/removeCoupon");
+      $("#checkoutBox").load(location.href + " #checkoutBox>*", "");
+    } catch (err) {
+      $("#checkoutBox").load(location.href + " #checkoutBox>*", "");
+      console.error(err);
+    }
+  }
+</script>
+
 <script>
  
 // generating orderId for razorpay 
