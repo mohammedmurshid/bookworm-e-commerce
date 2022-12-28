@@ -53,13 +53,14 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div>          
           <div class="sidebar__item" id="latestProducts">
             <div class="latest-product__text">
               <h4>Latest Products</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
                   <% newProducts.forEach((product)=> { %>
+                    <% if (!product.isDeleted) { %> 
                   <a href="/product/<%= product.id %>" class="latest-product__item">
                     <div class="latest-product__item__pic">
                       <img src="/files/<%=product.productImagePath[0]%>" alt="">
@@ -76,6 +77,7 @@
                     </div>
                     <% } %>
                   </a>
+                  <% } %>
                   <% }) %>
                 </div>
               </div>
