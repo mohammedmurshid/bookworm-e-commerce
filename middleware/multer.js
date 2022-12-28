@@ -10,17 +10,17 @@ const multerStorage = multer.diskStorage({
     }
 })
 
-const multerFilter = (req, file, cb) => {
-    if (file.mimetype == "image/jpeg" || file.mimetype == "image/png" || file.mimetype == "image/webp" || file.mimetype == "image/gif") {
-        cb(null, true)
-    } else  {
-        return cb(new Error("File not supported"), false)
-    }
-}
+// const multerFilter = (req, file, cb) => {
+//     if (file.mimetype == "image/jpg" || file.mimetype == "image/png" || file.mimetype == "image/webp" || file.mimetype == "image/gif") {
+//         cb(null, true)
+//     } else  {
+//         return cb(new Error("File not supported"), false)
+//     }
+// }
 
 const upload = multer({
     storage: multerStorage,
-    fileFilter: multerFilter
+    // fileFilter: multerFilter
 })
 
 const uploadImages = upload.array("productImages", 4)
@@ -34,10 +34,13 @@ module.exports = {
                 req.flash("message", "Error uploading files, Maximum 4 images")
                 res.redirect("/admin/products")            
             } else if (err) {
+                console.log(err)
+                console.log("Error occured");
                 // An unknown error occured during uploading
                 req.flash("message","Only support image files")
                 res.redirect("/admin/products")            
             } else {
+                console.log("image uploaded");
                 next()
             }
         })
