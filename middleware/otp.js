@@ -47,8 +47,7 @@ const otpVerification = async (req, res) => {
       res.render("otpValidationForm", {
         email: hiddenEmail,
         errorMessage: "invalid otp",
-        allCategories: allCategories,
-        layout: false
+        allCategories: allCategories
       });
     }
   } catch (err) {
@@ -66,8 +65,7 @@ const getOtpForm = async (req, res) => {
     res.render("otpValidationForm", {
       successMessage: successMessage,
       email: hiddenEmail,
-      allCategories: allCategories,
-      layout: false
+      allCategories: allCategories
     });
   } catch (err) {
     console.log(err);
