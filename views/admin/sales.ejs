@@ -1,264 +1,36 @@
 <div class="container-fluid px-4">
   <h1 class="mt-4">Sales Report</h1>
   <%- include("../partials/errorMessage") %>
-  
-<!-- Individual Sales Report -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <i class="fa-solid fa-chart-line"></i>
-      Individual Sales
-      <div class="float-end">
-        <button class="btn btn-dark btn-sm" onclick="exportCsv()">
-          Export CSV <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-dark btn-sm" onclick="exportPdf()">
-          Export PDF <i class="fa-solid fa-download"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-body">
-      <table id="datatablesSimple">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>City</th>
-            <th>Purchase Amount</th>
-            <th>Payment</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% allOrders.forEach(result => { %>
-          <tr>
-            <td>
-              <%= result.deliveryAddress.firstName %> <%=
-              result.deliveryAddress.lastName %>
-            </td>
-            <td><%= result.deliveryAddress.city%></td>
-            <td><%= Math.ceil(result.total) %></td>
-            <% if(result.paymentType == "cod" ){%>
-            <td>
-              <span class="badge" style="background-color: rgb(177, 39, 85)"
-                >COD</span
-              >
-            </td>
-            <%}else{%>
-            <td><span class="badge bg-success">Online</span></td>
-            <% } %>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
-  </div>
 
-  <!-- Daily Sales Report -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <i class="fa-solid fa-chart-line"></i>
-      Daily Sales
-      <div class="float-end">
-        <button class="btn btn-dark btn-sm" onclick="exportCsv()">
-          Export CSV <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-dark btn-sm" onclick="exportPdf()">
-          Export PDF <i class="fa-solid fa-download"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-body">
-      <table id="datatablesSimple">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Payment Type</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% dailySales.forEach(result => { %>
-          <tr>
-            <td><%= result.Date %></td>
-            <td><%= result.Time %></td>
-            <% if(result.paymentDetails == "cod" ){%>
-            <td>
-              <span class="badge" style="background-color: rgb(177, 39, 85)"
-                >COD</span
-              >
-            </td>
-            <%}else{%>
-            <td><span class="badge bg-success">Online</span></td>
-            <% } %>
-            <td><%= Math.ceil(result.subTotal) %></td>
-            <td><%= result.status %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Weekly Sales Report -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <i class="fa-solid fa-chart-line"></i>
-      Weekly Sales
-      <div class="float-end">
-        <button class="btn btn-dark btn-sm" onclick="exportCsv()">
-          Export CSV <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-dark btn-sm" onclick="exportPdf()">
-          Export PDF <i class="fa-solid fa-download"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-body">
-      <table id="datatablesSimple">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Payment Type</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% weeklySales.forEach(result => { %>
-          <tr>
-            <td><%= result.Date %></td>
-            <td><%= result.Time %></td>
-            <% if(result.paymentDetails == "cod" ){%>
-            <td>
-              <span class="badge" style="background-color: rgb(177, 39, 85)"
-                >COD</span
-              >
-            </td>
-            <%}else{%>
-            <td><span class="badge bg-success">Online</span></td>
-            <% } %>
-            <td><%= Math.ceil(result.subTotal) %></td>
-            <td><%= result.status %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Monthly Sales Report -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <i class="fa-solid fa-chart-line"></i>
-      Monthly Sales
-      <div class="float-end">
-        <button class="btn btn-dark btn-sm" onclick="exportCsv()">
-          Export CSV <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-dark btn-sm" onclick="exportPdf()">
-          Export PDF <i class="fa-solid fa-download"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-body">
-      <table id="datatablesSimple">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Payment Type</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% monthlySales.forEach(result => { %>
-          <tr>
-            <td><%= result.Date %></td>
-            <td><%= result.Time %></td>
-            <% if(result.paymentDetails == "cod" ){%>
-            <td>
-              <span class="badge" style="background-color: rgb(177, 39, 85)"
-                >COD</span
-              >
-            </td>
-            <%}else{%>
-            <td><span class="badge bg-success">Online</span></td>
-            <% } %>
-            <td><%= Math.ceil(result.subTotal) %></td>
-            <td><%= result.status %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Yearly Sales Report -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <i class="fa-solid fa-chart-line"></i>
-      Yearly Sales
-      <div class="float-end">
-        <button class="btn btn-dark btn-sm" onclick="exportCsv()">
-          Export CSV <i class="fa-solid fa-download"></i>
-        </button>
-        <button class="btn btn-dark btn-sm" onclick="exportPdf()">
-          Export PDF <i class="fa-solid fa-download"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-body">
-      <table id="datatablesSimple">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Payment Type</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% yearlySales.forEach(result => { %>
-          <tr>
-            <td><%= result.Date %></td>
-            <td><%= result.Time %></td>
-            <% if(result.paymentDetails == "cod" ){%>
-            <td>
-              <span class="badge" style="background-color: rgb(177, 39, 85)"
-                >COD</span
-              >
-            </td>
-            <%}else{%>
-            <td><span class="badge bg-success">Online</span></td>
-            <% } %>
-            <td><%= Math.ceil(result.subTotal) %></td>
-            <td><%= result.status %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
+  <table id="example" class="display nowrap" style="width: 100%">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>City</th>
+        <th>Purchase Amount</th>
+        <th>Payment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% allOrders.forEach(result => { %>
+      <tr>
+        <td>
+          <%= result.deliveryAddress.firstName %> <%=
+          result.deliveryAddress.lastName %>
+        </td>
+        <td><%= result.deliveryAddress.city%></td>
+        <td><%= Math.ceil(result.total) %></td>
+        <% if(result.paymentType == "cod" ){%>
+        <td>
+          <span class="badge" style="background-color: rgb(177, 39, 85)"
+            >COD</span
+          >
+        </td>
+        <%}else{%>
+        <td><span class="badge bg-success">Online</span></td>
+        <% } %>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
 </div>
-
-<script>
-  function exportCsv() {
-    myTable.export({
-      type: "csv",
-      skipColumn: [0, 8],
-      filename: "product_details",
-    });
-  }
-
-  function exportPdf() {
-    myTable.export({
-      type: "pdf",
-      skipColumn: [0, 8],
-      filename: "product_details",
-    });
-  }
-</script>
