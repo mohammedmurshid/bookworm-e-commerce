@@ -77,5 +77,5 @@ app.use(function (req, res, next) {
 
 });
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log("server is up and running on port" + PORT))
